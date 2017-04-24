@@ -16,6 +16,18 @@ public abstract class DAOFactory {
 		// TODO Auto-generated constructor stub
 	}
 
+	// Rishi - Can we make it really simple. 
+	/* Connection getConnection(String param){
+	 * Connection conn  = null;
+	 *  if(param = 0){
+	 *  	conn  = getConnectionWithJDBC();
+	 *  }else{
+	 *  	conn = getConnectionWithJNDI();
+	 *  }
+	 *  }
+s	 */
+	
+	
 	public static DAOFactory getInstance() throws Exception {
 		Connection con;
 		DataSource dataSource = null;
@@ -24,10 +36,11 @@ public abstract class DAOFactory {
 		String user = "root";
 		String password = "root";
 		String driverClassName = "com.mysql.jdbc.Driver";
-		if (driverClassName != null) {
+		if (driverClassName != null) { // Rishi - variable defined above - compared here
 			try {
-				Class.forName("com.mysql.jdbc.Driver");
+				Class.forName("com.mysql.jdbc.Driver"); 
 			} catch (Exception e) {
+				// Rishi - Exception suppressed
 				e.printStackTrace();
 			}
 			instance = new JDBCDaoFactory(url, user, password);

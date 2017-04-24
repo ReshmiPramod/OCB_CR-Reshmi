@@ -47,7 +47,7 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 		//	skuList.add(skus);
 		}
 	} catch(Exception e){
-        e.printStackTrace();
+        e.printStackTrace(); // RISHI - Exception suppressed
 		}finally{
 			daoFactory.closeConnection(con);
 				}

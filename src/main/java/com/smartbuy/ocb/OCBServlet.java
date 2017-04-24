@@ -39,7 +39,7 @@ public class OCBServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		 int intStoreNum = 0;
 		 try{
-					
+			// Rishi - Log4j
 			String storeNumber = request.getParameter("storeNumber");
 			if(storeNumber != null){
 				

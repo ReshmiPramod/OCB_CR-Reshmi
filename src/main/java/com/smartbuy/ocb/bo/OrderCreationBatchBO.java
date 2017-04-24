@@ -11,6 +11,9 @@ import com.smartbuy.ocb.dto.SKUDto;
 
 public class OrderCreationBatchBO {
 //	private IOrderCreationDAO dao;
+	
+	// Rishi - make variables private
+	// Rishi - is it thread safe to keep skuList as instance variable. Can we make it local variable instead?
 	List<SKUDto> skuList = new ArrayList<SKUDto>();
 	OrderDTO dto = new OrderDTO();
 //	OrderCreationDaoImpl dao = new OrderCreationDaoImpl() ;
@@ -27,13 +30,15 @@ public class OrderCreationBatchBO {
 //	public void setDao(IOrderCreationDAO dao) {
 //		this.dao = dao;
 //	}
+	
+	// Rishi - Exception suppressed. Should be thrown. Try custom exception 
 	public List<SKUDto> fetchSkuList(int intStoreNum) {
 		
 		try {
-			DAOFactory dB = DAOFactory.getInstance();
+			DAOFactory dB = DAOFactory.getInstance(); // Rishi - Can we do this in constructor?
 			IOrderCreationDAO dao = dB.getOrderCreation();
 			skuList = dao.getSkusFromStore(intStoreNum);
-			if(intStoreNum != 0){
+			if(intStoreNum != 0){ // Rishi - should we check size of skuList also?
 				poNum = dao.getPurchaseOrderNum();
 			}
 		} catch (Exception e) {
@@ -47,10 +52,11 @@ public class OrderCreationBatchBO {
 	
 	public void executeOrderCreation() throws Exception {
 		OrderDTO dto = new OrderDTO();
-		DAOFactory dB = DAOFactory.getInstance();
+		DAOFactory dB = DAOFactory.getInstance(); // Rishi - can we move this to constructor?
 		IOrderCreationDAO dao = dB.getOrderCreation();
-		
+		// Rishi - can we take skuList as method argument than instance variable
 		for (SKUDto sList : skuList) {
+			// Rishi - Change to Logger
 			System.out.println("List of Skudetails :" + sList.getSkuNumber() + " " + sList.getShelfQty() + " "
 					+ sList.getInStrQty() + " " + sList.getSkuRecThres());
 
@@ -58,7 +64,7 @@ public class OrderCreationBatchBO {
 			System.out.println("Total Quantity :" + qty);
 
 			if (qty < sList.getSkuRecThres()) {
-				// //order quantity calc
+				// Rishi - What if we get ParseException ? NumberFormatException here
 				int skuVel = Integer.parseInt(sList.getSkuVelocity());
 				int orderQty = skuVel * sList.getTrkDlvrDays();
 				dto.setSkuDto(sList);
@@ -66,7 +72,7 @@ public class OrderCreationBatchBO {
 				
 				boolean value =	dao.updateOrderCreation(sList,orderQty,poNum);
 					if(!value){
-						break;
+						break; // Rishi - what happens when break executes.
 					}
 			}
 			

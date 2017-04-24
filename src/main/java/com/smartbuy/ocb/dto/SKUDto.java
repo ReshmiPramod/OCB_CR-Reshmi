@@ -4,7 +4,7 @@ public class SKUDto {
 
 	private long skuNumber;
 	
-	private int storeNumber,trkDlvrDays,shelfQty,inStrQty,skuRecThres;
+	private int storeNumber,trkDlvrDays,shelfQty,inStrQty,skuRecThres; // RISHI - declare variables on separate lines. Its recommended
 	private String skuDescription,skuVelocity;
 	
 	public SKUDto(){

@@ -6,18 +6,17 @@ import com.smartbuy.ocb.bo.OrderCreationBatchBO;
 import com.smartbuy.ocb.dto.SKUDto;
 
 public class OCBMain {
-		
+	// Rishi - Log4j implementation missing
 	public OCBMain() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
+		// Rishi - Why initialization with null?
 		OrderCreationBatchBO orderBo = null	;
-		
-		
 		 orderBo = new OrderCreationBatchBO();
-		List<SKUDto> skus = orderBo.fetchSkuList(501);
+		// Rishi - can you take store from main argument array
+		 List<SKUDto> skus = orderBo.fetchSkuList(501);
 		
 			try {
 				if(!skus.equals(null)){

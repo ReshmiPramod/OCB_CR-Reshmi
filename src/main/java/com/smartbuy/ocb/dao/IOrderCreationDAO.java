@@ -1,6 +1,5 @@
 package com.smartbuy.ocb.dao;
 
-import java.sql.Connection;
 import java.util.List;
 
 import com.smartbuy.ocb.dto.SKUDto;
