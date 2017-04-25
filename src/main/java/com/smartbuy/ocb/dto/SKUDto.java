@@ -4,8 +4,13 @@ public class SKUDto {
 
 	private long skuNumber;
 	
-	private int storeNumber,trkDlvrDays,shelfQty,inStrQty,skuRecThres; // RISHI - declare variables on separate lines. Its recommended
-	private String skuDescription,skuVelocity;
+	private int storeNumber;
+	private int trkDlvrDays;
+	private int shelfQty;
+	private int inStrQty;
+	private int skuRecThres; 
+	private String skuDescription;
+	private String skuVelocity;
 	
 	public SKUDto(){
 		//constructor
@@ -34,12 +39,12 @@ public class SKUDto {
 	public void setStoreNumber(int storeNumber) {
 		this.storeNumber = storeNumber;
 	}
-//	public String getSkuDescription() {
-//		return skuDescription;
-//	}
-//	public void setSkuDescription(String skuDescription) {
-//		this.skuDescription = skuDescription;
-//	}
+	public String getSkuDescription() {
+		return skuDescription;
+	}
+	public void setSkuDescription(String skuDescription) {
+		this.skuDescription = skuDescription;
+	}
 	public int getTrkDlvrDays() {
 		return trkDlvrDays;
 	}

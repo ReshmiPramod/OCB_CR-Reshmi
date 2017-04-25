@@ -1,81 +1,95 @@
 package com.smartbuy.ocb.bo;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import com.smarbuy.ocb.exceptions.OcbException;
+import com.smartbuy.ocb.OCBServlet;
 import com.smartbuy.ocb.dao.DAOFactory;
 import com.smartbuy.ocb.dao.IOrderCreationDAO;
 import com.smartbuy.ocb.dto.OrderDTO;
 import com.smartbuy.ocb.dto.SKUDto;
 
 public class OrderCreationBatchBO {
-//	private IOrderCreationDAO dao;
+	private IOrderCreationDAO dao;
+	private DAOFactory dB;
+	private static Logger logger = Logger.getLogger(OrderCreationBatchBO.class);
+
 	
-	// Rishi - make variables private
-	// Rishi - is it thread safe to keep skuList as instance variable. Can we make it local variable instead?
+	// Rishi - is it thread safe to keep skuList as instance variable. Can we
+	// make it local variable instead?
 	List<SKUDto> skuList = new ArrayList<SKUDto>();
 	OrderDTO dto = new OrderDTO();
-//	OrderCreationDaoImpl dao = new OrderCreationDaoImpl() ;
-//	private OrderCreationDaoImpl dao;
+
 	int poNum = 0;
 
-	public OrderCreationBatchBO() {
-		
-		}
-
-//	public void setDao(OrderCreationDaoImpl dao) {
-//		this.dao = dao;
-//	}
-//	public void setDao(IOrderCreationDAO dao) {
-//		this.dao = dao;
-//	}
-	
-	// Rishi - Exception suppressed. Should be thrown. Try custom exception 
-	public List<SKUDto> fetchSkuList(int intStoreNum) {
-		
+	public OrderCreationBatchBO() throws OcbException {
 		try {
-			DAOFactory dB = DAOFactory.getInstance(); // Rishi - Can we do this in constructor?
-			IOrderCreationDAO dao = dB.getOrderCreation();
+			dB = DAOFactory.getInstance();
+		} catch (Exception e) {
+			throw new OcbException(e.getMessage(), e);
+		}
+	}
+
+	public void setDao() {
+		this.dao = dao;
+	}
+
+	public List<SKUDto> fetchSkuList(int intStoreNum) throws OcbException {
+
+		try {
+			dao = dB.getOrderCreation();
 			skuList = dao.getSkusFromStore(intStoreNum);
-			if(intStoreNum != 0){ // Rishi - should we check size of skuList also?
+			if (intStoreNum != 0 && skuList != null) {
 				poNum = dao.getPurchaseOrderNum();
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			throw new OcbException(e.getMessage(), e);
 		}
-		
+
 		return skuList;
-		
+
 	}
-	
-	public void executeOrderCreation() throws Exception {
+
+	public void executeOrderCreation() throws OcbException {
 		OrderDTO dto = new OrderDTO();
-		DAOFactory dB = DAOFactory.getInstance(); // Rishi - can we move this to constructor?
-		IOrderCreationDAO dao = dB.getOrderCreation();
+		// DAOFactory dB = DAOFactory.getInstance();
+		int skuVel = 0;
+		dao = dB.getOrderCreation();
 		// Rishi - can we take skuList as method argument than instance variable
 		for (SKUDto sList : skuList) {
-			// Rishi - Change to Logger
-			System.out.println("List of Skudetails :" + sList.getSkuNumber() + " " + sList.getShelfQty() + " "
+
+			logger.debug("List of Skudetails :" + sList.getSkuNumber() + " " + sList.getShelfQty() + " "
 					+ sList.getInStrQty() + " " + sList.getSkuRecThres());
 
 			int qty = sList.getShelfQty() + sList.getInStrQty();
 			System.out.println("Total Quantity :" + qty);
 
 			if (qty < sList.getSkuRecThres()) {
-				// Rishi - What if we get ParseException ? NumberFormatException here
-				int skuVel = Integer.parseInt(sList.getSkuVelocity());
+
+				try {
+					skuVel = Integer.parseInt(sList.getSkuVelocity());
+				} catch (NumberFormatException e) {
+					logger.error("Number format Exception" + e);
+				}
 				int orderQty = skuVel * sList.getTrkDlvrDays();
 				dto.setSkuDto(sList);
 				dto.setOrderQty(orderQty);
-				
-				boolean value =	dao.updateOrderCreation(sList,orderQty,poNum);
-					if(!value){
-						break; // Rishi - what happens when break executes.
-					}
+
+				boolean value;
+				try {
+					value = dao.updateOrderCreation(sList, orderQty, poNum);
+				} catch (Exception e) {
+					throw new OcbException(e.getMessage(), e);
+				}
+				if (!value) {
+					break; // Rishi - what happens when break executes.
+				}
 			}
-			
+
 		}
 
 	}

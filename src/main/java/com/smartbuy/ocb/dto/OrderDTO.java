@@ -7,7 +7,8 @@ public class OrderDTO {
 	}
 
 	private SKUDto skuDto;
-	private int orderQty,PONumber;
+	private int orderQty;
+	private int PONumber;
 	
 	
 	public SKUDto getSkuDto() {

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.smarbuy.ocb.exceptions.OcbException;
 import com.smartbuy.ocb.dto.OrderDTO;
 import com.smartbuy.ocb.dto.SKUDto;
 
@@ -21,7 +22,7 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 	}
 
 
-	public List<SKUDto> getSkusFromStore(int storeNumber) throws Exception {
+	public List<SKUDto> getSkusFromStore(int storeNumber) throws OcbException {
 		PreparedStatement ps = null;
 	try {
 		
@@ -46,16 +47,17 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 			i++;
 		//	skuList.add(skus);
 		}
-	} catch(Exception e){
-        e.printStackTrace(); // RISHI - Exception suppressed
-		}finally{
+	} catch (Exception e) {
+		throw new OcbException(e.getMessage(), e);
+				}
+		finally{
 			daoFactory.closeConnection(con);
 				}
 
 	return skuList;
 	}
 
-	public int getPurchaseOrderNum() throws Exception {
+	public int getPurchaseOrderNum() throws OcbException {
 		OrderDTO PONum = new OrderDTO();
 		PreparedStatement psSelect = null;
 		PreparedStatement psUpdate = null;
@@ -83,15 +85,16 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 			System.out.println(poNum);
 			con.commit();
 		}
-		}catch(Exception e){
-            e.printStackTrace();
-			}finally{
+		}catch (Exception e) {
+			throw new OcbException(e.getMessage(), e);
+					}
+			finally{
 				daoFactory.closeConnection(con);
 					}
 		return poNum;
 	}
 
-	public boolean updateOrderCreation(SKUDto list, int orderQty, int poNum) throws Exception {
+	public boolean updateOrderCreation(SKUDto list, int orderQty, int poNum) throws OcbException {
 		try{
 
 //			con = dB.getConnection();
@@ -108,9 +111,10 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 			psInsert.executeUpdate();
 			psInsert.close();
 			
-		}catch(Exception e){
-            e.printStackTrace();
-			}finally{
+		}catch (Exception e) {
+			throw new OcbException(e.getMessage(), e);
+		}
+			finally{
 				daoFactory.closeConnection(con);
 					}
 		
