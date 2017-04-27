@@ -1,6 +1,5 @@
 package com.smartbuy.ocb;
 
-
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -12,20 +11,25 @@ import com.smartbuy.ocb.dto.SKUDto;
 public class OCBMain {
 	//  Log4j implementation 
 	private static Logger logger = Logger.getLogger(OCBMain.class);
+//	OrderCreationDaoImpl dao;
+	
 	public OCBMain() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public static void main(String[] args) throws OcbException {
 	
-		OrderCreationBatchBO orderBo;
-		 orderBo = new OrderCreationBatchBO();
-		// Rishi - can you take store from main argument array
-		 List<SKUDto> skus = orderBo.fetchSkuList(501);
+		
+		int param = 0;
+		OrderCreationBatchBO orderBo = new OrderCreationBatchBO(param);
+		
+		//  take store from main argument array
+		int storeNumber = Integer.parseInt(args[0]);
+		 List<SKUDto> skus = orderBo.fetchSkuList(storeNumber);
 		
 			try {
-				if(!skus.equals(null)){
-				orderBo.executeOrderCreation();
+				if(skus != null && skus.size() > 0){
+					orderBo.executeOrderCreation(skus);
 				}
 			} catch (OcbException exe) {
 				logger.error("OCB Exception ::" + exe.getMessage(),exe);
@@ -33,9 +37,8 @@ public class OCBMain {
 			}
 			catch (Exception e) {
 				logger.error("OCB Exception ::" + e.getMessage(),e);
-				
-		}
-	  }		
+			}	
+	  }//main close		
 	}
 
 

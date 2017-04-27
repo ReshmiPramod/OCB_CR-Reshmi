@@ -12,22 +12,21 @@ import com.smartbuy.ocb.dto.SKUDto;
 
 public class OrderCreationDaoImpl implements IOrderCreationDAO {
 	
-	private DAOFactory daoFactory;
-	Connection con;
-	List<SKUDto> skuList = new ArrayList<SKUDto>();
-
-	OrderCreationDaoImpl(DAOFactory daoFactory) {
-		// TODO Auto-generated constructor stub
-		this.daoFactory = daoFactory;
+	private DAOFactory daoFactory  = new DAOFactory();
+	private List<SKUDto> skuList = new ArrayList<SKUDto>();
+	private int param = 0;
+	
+	public OrderCreationDaoImpl(int param) {
+		this.param = param;
 	}
-
 
 	public List<SKUDto> getSkusFromStore(int storeNumber) throws OcbException {
 		PreparedStatement ps = null;
+		Connection con = null;
+		
 	try {
 		
-		// Prepare Statement
-		con = daoFactory.getConnection();
+		con = daoFactory.getDBConnection(param);
 		ps = con.prepareStatement(getSkusfromStore);
 		ps.setInt(1, storeNumber);
 		ResultSet rs = ps.executeQuery();
@@ -45,7 +44,7 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 			skus.setSkuRecThres(rs.getInt("SKU_RCMD_THRD"));
 			skuList.add(i, skus);
 			i++;
-		//	skuList.add(skus);
+		
 		}
 	} catch (Exception e) {
 		throw new OcbException(e.getMessage(), e);
@@ -62,17 +61,16 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 		PreparedStatement psSelect = null;
 		PreparedStatement psUpdate = null;
 		ResultSet rs = null;
+		Connection con = null;
 		int poNum =0;
 		try{
-	//		con = dB.getConnection();
-			con = daoFactory.getConnection();
+			con = daoFactory.getDBConnection(param);
 		    con.setAutoCommit(false);
 		
 		psSelect = con.prepareStatement(getPONumber);
 		rs = psSelect.executeQuery();
 		while(rs.next()){
 			PONum.setPONumber(rs.getInt("LAST_PO_NUM"));
-//			PONum.getPONumber() = PONum.getPONumber() + 1;
 			poNum = PONum.getPONumber();
 			poNum = poNum + 1;
 		}
@@ -95,11 +93,10 @@ public class OrderCreationDaoImpl implements IOrderCreationDAO {
 	}
 
 	public boolean updateOrderCreation(SKUDto list, int orderQty, int poNum) throws OcbException {
+		PreparedStatement psInsert = null;
+		Connection con = null;
 		try{
-
-//			con = dB.getConnection();
-			con = daoFactory.getConnection();
-			PreparedStatement psInsert = null;
+			con = daoFactory.getDBConnection(param);
 			psInsert = con.prepareStatement(insertValues);
 			String poValue = Integer.toString(poNum);
 			psInsert.setString(1, poValue);

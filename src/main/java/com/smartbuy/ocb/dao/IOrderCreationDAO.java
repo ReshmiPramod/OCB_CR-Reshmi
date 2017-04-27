@@ -1,7 +1,7 @@
 package com.smartbuy.ocb.dao;
 
 import java.util.List;
-
+import com.smarbuy.ocb.exceptions.OcbException;
 import com.smartbuy.ocb.dto.SKUDto;
 
 
@@ -38,11 +38,11 @@ public interface IOrderCreationDAO {
 			+ "VALUES (?,?,?,?,?);";
 
 	
-	public List<SKUDto> getSkusFromStore(int storeNumber) throws Exception;
+	public List<SKUDto> getSkusFromStore(int storeNumber) throws OcbException;
 
-	public int getPurchaseOrderNum() throws Exception;
+	public int getPurchaseOrderNum() throws OcbException;
  
-	public boolean updateOrderCreation(SKUDto list,int orderQty,int poNum) throws Exception;
+	public boolean updateOrderCreation(SKUDto list,int orderQty,int poNum) throws OcbException;
 
 		
 	
